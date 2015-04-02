@@ -253,56 +253,39 @@ export class ParseYoloCustomElement extends Array{
             .withProperty('size')
             .withProperty('color')
             .noView();
-    };
+    }
 
     static inject(){
         return [Element];
     }
 
-    get name(){
+    get name(){}
     
-    };
-    get age(){
-    
-    };
+    get age(){}
 
-    set name(value){
+    set name(value){}
     
-    };
-    
-    set age(value){
-    
-    };
+    set age(value){}
 
-    constructor(element) {
+    constructor(element) {}
     
-    };
+    attached(){}
     
-    attached(){
-    
-    };
-    bind(){};
+    bind(){}
 
-    sizeChanged(newSize){
+    sizeChanged(newSize){}
     
-    };
-    
-    colorChanged(newColor){
-    
-    };
+    colorChanged(newColor){}
 
-    setName(){
+    setName(){}
     
-    };
-    getName(){};
-    setAge(){};
-    getAge(){};
+    getName(){}
+    
+    setAge(){}
+    
+    getAge(){}
 }
 ```
-
-**MOST SEMICOLANS WILL NOT BE GENERATED**
-
-I am using them in the example for githubs syntax highlighting.
 
 ##add
 
