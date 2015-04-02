@@ -257,23 +257,43 @@ export class ParseYoloCustomElement extends Array{
 
     static inject(){
         return [Element];
+    }
+
+    get name(){
+    
+    };
+    get age(){
+    
     };
 
-    get name(){};
-    get age(){};
-
-    set name(value){};
-    set age(value){};
-
-    constructor(element) {};
+    set name(value){
     
-    attached(){};
+    };
+    
+    set age(value){
+    
+    };
+
+    constructor(element) {
+    
+    };
+    
+    attached(){
+    
+    };
     bind(){};
 
-    sizeChanged(newSize){};
-    colorChanged(newColor){};
+    sizeChanged(newSize){
+    
+    };
+    
+    colorChanged(newColor){
+    
+    };
 
-    setName(){};
+    setName(){
+    
+    };
     getName(){};
     setAge(){};
     getAge(){};
