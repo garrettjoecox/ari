@@ -155,19 +155,19 @@ ari add plugin parse-yolo
 
 Now lets begin building out this plugin
 
-Using `ari use as` will allow us to use ari commands as we please. Otherwise we would have to type 
+Using `ari use as` will allow us to create an alias from you plugins.  Otherwise we would have to type 
 `ari plugin my-plugin [action] [arguments]`
 
 So lets use `use as`.
 
 ```bash
-ari use plugin my-plugin as build
+ari use plugin my-plugin as pl
 ```
 
 **NOTE:**  For now... there are prompts for any flag not passed.
 
 ```bash
-ari build add customElement
+ari pl add customElement
 ```
 
 We did not pass any flags so here are the prompts.
@@ -188,6 +188,8 @@ Any **key:value** pair in the flags or prompts are separated by a collan
 @key    [name]
 @value  [from]
 
+@params <key:values>
+
 > imports?: Behavior:aurelia-templating,Router:aurelia-router
 ```
 
@@ -204,7 +206,7 @@ Any **key:value** pair in the flags or prompts are separated by a collan
 ```
 
 ```bash
-@key    [injected]
+@key    <injected>
 
 > inject?: Element
 ```
@@ -213,23 +215,27 @@ Any **key:value** pair in the flags or prompts are separated by a collan
 @key    [name:]
 @value  [method:attribute:binding]
 
+@params <key:values> 
+
+#if there are values
+
 > metadata?: size,color
 ```
 
 ```bash
-@key    [name]
+@key    <names>
 
 > getters?: name,age
 ```
 
 ```bash
-@key    [name]
+@key    <names>
 
 > setters?: name,age
 ```
 
 ```bash
-@key    [name]
+@key    <names>
 
 > prototypes?: setName,getName,setAge,getAge
 ```
@@ -237,8 +243,8 @@ Any **key:value** pair in the flags or prompts are separated by a collan
 Once complete, ari will generate a file like the following.
 
 ```javascript
-import {Behavior} from 'aurelia-templating'
-import {Router} from 'aurelia-router'
+import {Behavior} from 'aurelia-templating';
+import {Router} from 'aurelia-router';
 
 export class ParseYoloCustomElement extends Array{
 
@@ -246,33 +252,37 @@ export class ParseYoloCustomElement extends Array{
         return Behavior
             .withProperty('size')
             .withProperty('color')
-            .noView()
-    }
+            .noView();
+    };
 
     static inject(){
-        return [Element]
-    }
+        return [Element];
+    };
 
-    get name(){}
-    get age(){}
+    get name(){};
+    get age(){};
 
-    set name(value){}
-    set age(value){}
+    set name(value){};
+    set age(value){};
 
-    constructor(element) {}
+    constructor(element) {};
     
-    attached(){}
-    bind(){}
+    attached(){};
+    bind(){};
 
-    sizeChanged(newSize){}
-    colorChanged(newColor){}
+    sizeChanged(newSize){};
+    colorChanged(newColor){};
 
-    setName(){}
-    getName(){}
-    setAge(){}
-    getAge(){}
+    setName(){};
+    getName(){};
+    setAge(){};
+    getAge(){};
 }
 ```
+
+**MOST SEMICOLANS WILL NOT BE GENERATED**
+
+I am using them in the example for githubs syntax highlighting.
 
 ##add
 
@@ -286,7 +296,7 @@ Once  a project is added, the project name becomes a command.
 
 `ari use [name]`
 
-The **use command creates a shortcut that allows you to not have to prefix your projects with the word project like so.. `ari project my-project [action]`
+The **use** command creates a shortcut that allows you to not have to prefix your projects with the word project like so.. `ari project my-project [action]`
 
 After running `ari use project my-project`, all the project commands are now accessible by just typing `ari [action]`. 
 
@@ -355,7 +365,7 @@ Import allows you to import projects or components from your local machine
 
 ##clone
 
-`ari clone [project | plugin] [path] as [name]`
+`ari clone [project | plugin] [url] as [name]`
 
 Clone allows you to git clone projects or components from a git repository.
 
@@ -378,7 +388,7 @@ The templates are used to generate code.
 
 I decided to not use **Yeoman** or **slush**. Simply because I am personally never satisfied with the generated code. 
 
-You are able to use you own templates, by simply placing them in your templates directory. 
+You are able to use your own templates, by simply placing them in your templates directory. 
 
 **NOTICE** When you look at each template, you will see some weired things happening. 
 
@@ -418,7 +428,7 @@ within `./templates/`
 Then I can simply run the following 
 
 ```bash
-ari plugin my-plugin add class MyClass --template myclass --filter functionName:my-plugin, params:"one,two,three"
+ari plugin my-plugin add class MyClass --template myclass --filter functionName:my-plugin,params:"one,two,three"
 ```
 
 It would generate the following
@@ -462,18 +472,20 @@ Class allows you to create classes within plugins and projects
 
 >--Flags
 
-#####--import -im <name:from:>
+#####--import -im `<name:from:>`
 
 List: of modules in import.
 
-#####--export -ex (Y/n)
+#####--export (Y/n)
 
 Boolean: whether or not to export the class
 **IS NOT A LIST OF THINGS IN EXPORT**
 
-#####--inject -in <names>
+#####--inject -in `<names>`
 
 List: of things to inject
+
+#####--extends -ext [name]
 
 #####--setters -set [name]
 
@@ -493,7 +505,7 @@ List: of prototypes to add to the class
 
 Same as class, Except it will automatically inject `Element`. 
 
-#####--metadata -meta <name:method:attr:binding>
+#####--metadata -meta `name:method:attr:binding`
 
 List: of metadata behavior properties
 
