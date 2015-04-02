@@ -276,7 +276,7 @@ export class ParseYoloCustomElement extends Array{
 
 ##add
 
-`ai add [plugin | project] [name]` 
+`ari add [plugin | project] [name]` 
 
 The **add** command allows you to add a plugin or project repository.
 
@@ -284,15 +284,15 @@ Once  a project is added, the project name becomes a command.
 
 ##use 
 
-`ai use [name]`
+`ari use [name]`
 
-The **use command creates a shortcut that allows you to not have to prefix your projects with the word project like so.. `ai project my-project [action]`
+The **use command creates a shortcut that allows you to not have to prefix your projects with the word project like so.. `ari project my-project [action]`
 
-After running `ai use project my-project`, all the project commands are now accessible by just typing `ai [action]`. 
+After running `ari use project my-project`, all the project commands are now accessible by just typing `ari [action]`. 
 
 ##delete
 
->alias = ai del
+>alias = ari del
 
 `ari del [project | plugin] [name]`
 
@@ -345,17 +345,112 @@ The ari plugin command can be used one of two ways
 
 It can be considered as a selector for the plugins directory.
 
+##import
+
+`ari import [project | plugin] [path] as [name]`
+
+Import allows you to import projects or components from your local machine
+
+---
+
+##clone
+
+`ari clone [project | plugin] [path] as [name]`
+
+Clone allows you to git clone projects or components from a git repository.
+
 ---
 
 ##config
+
+The ari config is a JSON file that baseic contains information about projects and plugins. However, there is a `.ari/` directory that contains configurations for each.
+
+I am keeping this separate form each repository, so that it is not 
+**ANOTHER FILE in your code base** 
+
+ari is simply used locally. If you want to keep your configurations in your repository... simply place it there. Ari will look there for it.
 
 ---
 
 ##templates
 
+The templates are used to generate code. 
+
+I decided to not use **Yeoman** or **slush**. Simply because I am personally never satisfied with the generated code. 
+
+You are able to use you own templates, by simply placing them in your templates directory. 
+
+**NOTICE** When you look at each template, you will see some weired things happening. 
+
+```
+<% _.forEach(prototypes, function(proto){ %>
+    <%= proto %>(){}
+<% } %>
+```
+
+This is lodash's template syntax. I am using gulp-template to parse the generated code, and inject the proper values with options defined on the command line. 
+
+There are some default parameters you can place in your templates. 
+
+However, you can place your own, and use the flag `--filter` to add properties to you templates. 
+
+For example
+
+If I made a template, and in my index file I wanted to inject a property called `functionName`, and I wanted to use it like the following
+
+within `./templates/`
+
+    myclass/
+        myclass.js
+
+
+```javascript
+
+    export class <%= className %>{
+
+        constructor(<%= params %>){
+
+        }
+
+    }
+```
+
+Then I can simply run the following 
+
+```bash
+ari plugin my-plugin add class MyClass --template myclass --filter functionName:my-plugin, params:"one,two,three"
+```
+
+It would generate the following
+
+```javascript
+
+    export class MyClass{
+
+        constructor(one, two, three){
+
+        }
+
+    }
+```
+
 ---
 
 ##github templates
+
+Git hub templates are the same way, however... It allows you to clone them, instead of keeping the locally. 
+
+In order to set this up you can do the following. 
+
+```bash
+ari add template:git http://github.com/<username>/myawesomeclass as myclass
+```
+
+This will place the repository handle in the config. Then you can run
+
+```bash
+ari plugin my-plugin add class MyClass --template:git myclass --filter functionName:my-plugin, params:"one,two,three"
+```
 
 ---
 
@@ -363,11 +458,66 @@ It can be considered as a selector for the plugins directory.
 
 ##class
 
+Class allows you to create classes within plugins and projects
+
+>--Flags
+
+#####--import -im <name:from:>
+
+List: of modules in import.
+
+#####--export -ex (Y/n)
+
+Boolean: whether or not to export the class
+**IS NOT A LIST OF THINGS IN EXPORT**
+
+#####--inject -in <names>
+
+List: of things to inject
+
+#####--setters -set [name]
+
+List: of setters to add to the class
+
+#####--getters -get [name]
+
+List: of getters to add to the class
+
+#####--prototypes -pro [name]
+
+List: of prototypes to add to the class
+
+
+
 ##customElement
+
+Same as class, Except it will automatically inject `Element`. 
+
+#####--metadata -meta <name:method:attr:binding>
+
+List: of metadata behavior properties
+
+**If Behavior is not imported, and you use metadata, then ari will imprt it for you**
 
 ##customAttribute
 
+Same as **customElement**
+
+
+>--Flags
+
+#####--metadata -meta <name:method:attr:binding>
+
+List: of metadata behavior properties
+
+**If Behavior is not imported, and you use metadata, then ari will imprt it for you**
+
+#####--view (Y/n)
+
 ##router
+
+Same as class, Except it will automatically 
+inject the `Router` from aurelia-router.
 
 ##model
 
