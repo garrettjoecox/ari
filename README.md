@@ -345,6 +345,43 @@ The ari plugin command can be used one of two ways
 
 It can be considered as a selector for the plugins directory.
 
+---
+
+##config
+
+---
+
+##templates
+
+---
+
+##github templates
+
+---
+
+#construction
+
+##class
+
+##customElement
+
+##customAttribute
+
+##router
+
+##model
+
+##view
+
+##file
+
+#dir
+
+---
+
+
+
+
 #More coming soon
 
 ## Contributing
