@@ -4,6 +4,7 @@ var
  *
  */
         ask        = require('inquirer').prompt
+      , extend     = require('lodash/object/extend')
       , prompts    = require('./prompts')
       , write      = require('fs-utils').writeJSON
       , configPath = process.cwd() + '/.ari-config.json'
@@ -11,25 +12,24 @@ var
       , Err        = logger.Err
       , Ok         = logger.Ok
 ;
-module.exports.run = (function(){
+module.exports = (function(){
+
+    var config = process.ARI.config
 
     return function(){
 
         ask(prompts, save)
 
         function save(answers) {
-            var config = {
-                  name : answers.name
-                , root : process.cwd()
-                , projects : {}
-                , plugins  : {}
-                , using    : {}
-                , holding  : {}
-                , paths    : {
-                    holding   : "/.holding",
-                    templates : "/templates"
-                  }
-            }
+
+            config.name     = answers.name;
+            config.root     = process.cwd();
+            config.paths    = config.paths    || {holding   : "/.holding", templates : "/templates"};
+            config.projects = config.projects || {};
+            config.holding  = config.holding  || {};
+            config.plugins  = config.plugins  || {};
+            config.using    = config.using    || {};
+
             write(configPath, config, finish);
         }
 
@@ -41,7 +41,7 @@ module.exports.run = (function(){
                 process.exit(0)
             }
             Ok('')
-            Ok('${a} has been initialize')
+            Ok('${a} has been initialize', config.name)
             Ok('')
             process.exit()
         }

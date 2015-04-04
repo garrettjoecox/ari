@@ -33,6 +33,7 @@ if (!config.length){
 // Parses config for use
 config = JSON.parse(config);
 var commands = {
+    init: true,
     help: true,
     add: true,
     del: true,

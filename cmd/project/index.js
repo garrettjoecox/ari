@@ -80,7 +80,7 @@ var PROJECT = module.exports = (function(){
         action  = String(args[2]);
         target  = String(args[3]);
         name    = String(args[4]);
-        return this.validate();
+        return validate();
     }
 
     function validate(){
@@ -92,7 +92,7 @@ var PROJECT = module.exports = (function(){
 
         Ok(msgs.validated.ok, project.name)
 
-        return this.finish()
+        return finish()
     }
 
     function finish() {
