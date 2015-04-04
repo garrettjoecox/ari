@@ -41,7 +41,7 @@ module.exports = (function(){
                 process.exit(0)
             }
             Ok('')
-            Ok('${a} has been initialize', config.name)
+            Ok('${a} has been initialized', config.name)
             Ok('')
             process.exit()
         }
