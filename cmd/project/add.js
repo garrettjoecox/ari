@@ -3,92 +3,71 @@ var
     Dependencies
  */
 
-          path = require('path')
-        , _    = require('lodash')
-        , gulpTemplate = require('gulp-template')
-        , rename     = require('gulp-rename')
-        , gulp       = require('gulp')
-        , lib        = require('../../lib')
-        , logger     = lib('logger')
-        , Err        = logger.Err
-        , Ok         = logger.Ok
-        , templates = path.join.bind(path, path.join(__dirname, '../../templates'))
-        , defaults  = {
-              name       : ''
-            , imports    : [{name:'Behavior', from:'aurelia-templating'}]
-            , exporting  : true
-            , inherits   : false
-            , getters    : ['age']
-            , setters    : ['age']
-            , prototypes : ['ageChanged']
-            , params     : ['one', 'two']
-          }
-        , filters = {
-              class   : defaults
-            , element : {
-                  imports    : [{name:'Behavior', from:'aurelia-templating'}]
-                , metadata   : []
-                , inject     : ['Element']
-                , params     : ['element']
-                , view       : true
-              }
-            , attribute : {
-                  imports    : [{name:'Behavior', from:'aurelia-templating'}]
-                , metadata   : []
-                , inject     : ['Element']
-                , params     : ['element']
-                , view       : false
-              }
-            , resource : {
-                index: true
-              }
-          }
-        , dirs = {
-              class: {
-                all: '**/*'
-              }
-            , element : {
-                  model: '/model/*'
-                , view : '/view/*'
-                , all  : '/**/*'
-              }
-        }
+      path = require('path')
+    , extend = require('lodash/object/extend')
+    , gulpTemplate = require('gulp-template')
+    , rename     = require('gulp-rename')
+    , gulp       = require('gulp')
+    , logger     = require('../../lib/logger')
+    , Err        = logger.Err
+    , Ok         = logger.Ok
+    , templates  = path.join.bind(path, path.join(__dirname, '../../templates'))
+    , settings   = require('./settings/add')
+    , ask        = require('inquirer').prompt
+    , prompts    = require('./prompts/add')
+
 ;
-var ADD = module.exports = (function(){
-    return function(config, project, action, target, name){
+module.exports = function(config, project, action, target, name){
 
-        var
-              source
-            , filter
-            , sourceDir = templates(target)
-            , dest    = path.join(config.root, (project.path || '/projects/'+project.name), 'src', name);
-        ;
+    var
+    /*
+     *  Locals
+     *  @source    the final source path for gulp to grab
+     *  @sourceDir source dir path for source
+     *  @dest      the destination for gulp.dest
+     */
+          source
+        , filter
+        , sourceDir = templates(target)
+        , dest      = path.join(config.root, (project.path || '/projects/'+project.name), 'src', name);
+    ;
 
-        source = sourceDir + dirs[target].all
+    settings  = settings(target, name)
+    source    = sourceDir + settings.glob.all
+    filter    = settings.filter
 
-        filter = _.extend(defaults, filters[target]);
+    ////////////////////////////////
 
-        ////////////////
+    filter.name  = name
+    filter.names = settings.names
 
-        gulp.task('add', function(done){
-            gulp.src(source)
-                .pipe(gulpTemplate(filter))
-                .pipe(rename(function(file){
-                    if (file.basename === '_') {
-                        file.basename = _.kebabCase(name)
-                    }
-                    return file
-                }))
-                .pipe(gulp.dest(dest))
-                .on('end', function(){
-                    done();
-                    Ok('Finished creating ${a} ${b}', target, name)
-                    process.exit(0)
-                })
-        })
+    ask(prompts(target), function(answers){
+        extend(filter, answers)
+        start()
+    });
 
+    function start(){
         gulp.start('add');
     }
 
+    gulp.task('add', function(done){
+        gulp.src(source)
+            .pipe(gulpTemplate(filter))
+            .pipe(rename(function(file){
+                if (file.basename === '_') {
+                    file.basename = settings.names.kebab
+                }
+                return file;
+            }))
+            .pipe(gulp.dest(dest))
+            .on('error', function(){
+                Err('Issue adding ${a}', name)
+            })
+            .on('end', function(){
+                done();
+                Ok('Finished creating ${a} ${b}', target, name)
+                process.exit(0)
+            })
+    })
 
-})()
+}

@@ -1,7 +1,7 @@
 <% _.forEach(imports, function(item){ %>import {<%=item.name%>} from '<%= item.from %>'
 <%})%>
 
-<% if(exporting){ %>export<% } %> class <%=_.capitalize(_.camelCase(name)) %><% if(inherits){ %> extends <%= inherits %><%}%>{
+<% if(exporting){ %>export<% } %> class <%= names.class %><% if(inherits){ %> extends <%= inherits %><%}%>{
 
     <% _.forEach(getters, function(item){ %>
     get <%= item %>(){}

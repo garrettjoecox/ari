@@ -103,6 +103,10 @@ var PROJECT = module.exports = (function(){
         return actions[action]()(config, project, action, target, name);
     }
 
+
+    /*
+     *    Helpers
+     */
     function exit(num){
         num = num || 0;
         process.exit(num)
