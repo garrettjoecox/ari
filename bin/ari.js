@@ -1,115 +1,57 @@
 #!/usr/bin/env node
 
-/*
- * ari
- * https://github.com/e768835/bb
- *
- * Copyright (c) 2015,
- * Licensed under the MIT license.
- */
-'use strict'
+// Slice arguments into an array
+process.ARI = {};
+var args = process.argv.slice(2);
 
-    var
-        fs
-      , isConfig
-      , commands
-      , command
-      , config
-      , configFile
-      , isEmpty
-      , configPath     = process.cwd() + '/.ari-config.json'
-      , args           = process.argv.slice(2)
-      , cmd            = args[0]
-      , log            = console.log
-      , color          = require('colors')
+// If there are no arguments run help
+if (!args.length){
+    require('../cmd/help')();
+    return;
+}
 
+var fs = require('fs');
+var Err = require('../lib/logger').Err;
+var configPath = process.cwd() + '/.ari-config.json';
 
+// Checks for configuration file
+if (!fs.existsSync(configPath)){
+    Err('Config not found');
+    Err('Please run ari init');
+    return;
+}
 
-    if (!cmd) {
-        use('help');
-    }
+var config = fs.readFileSync(configPath);
 
-    fs             = require('fs')
-    isConfig       = fs.existsSync(configPath)
-    config         = {}
+// Checks if config is empty for some reason?
+if (!config.length){
+    Err('Config file is empty');
+    Err('Please run ari init');
+    return;
+}
 
-    if (!isConfig) {
+// Parses config for use
+config = JSON.parse(config);
+var commands = {
+    help: true,
+    add: true,
+    del: true,
+    delete: true,
+    project: true,
+}
 
-        log('Config not found'.red);
-        log('Please run ari init'.blue);
-        process.exit(0);
-    }
+// If first argument is the name of a project in the config, add 'project' to the front of the args array
+if (config.projects[args[0]]) args.unshift('project');
 
-    configFile = fs.readFileSync(configPath);
+process.ARI.args = args;
+process.ARI.config = config;
+process.ARI.configPath = configPath;
 
-    isEmpty = !!(configFile.length);
-
-    if (!isEmpty) {
-        log('Config file is Empty'.red);
-        log('Please run ari init'.red);
-        process.exit(0);
-    }
-
-    log('Config is not Empty'.green)
-
-    config = JSON.parse(configFile);
-
-
-    commands = {
-          help   : use('help')
-        , add    : use('add')
-        , delete : use('delete')
-        , del    : use('delete')
-        , project: use('project')
-        // , hold   : use('hold')
-    };
-
-    /*
-        Prefix args if the command is a current running project.
-        This way we don't have to have separate configurations for two different commands.
-     */
-    if (config.projects[cmd]) {
-        args.unshift('project');
-        cmd = args[0];
-        log('Project '.green+args[1]+' found as command'.green)
-    }
-
-    /*
-        arg 1 must exist in commands
-
-     */
-    if (!commands[cmd]) {
-        log(color.red('Command '+cmd +' Does not exist!'));
-        cmd = 'help';
-        process.exit(0);
-    }
-
-    /*
-        If the command was ari [my-project, add, class]
-        then reformat the args [project, my-project, add, class]
-    */
-
-    log(color.green('Command ' + cmd + ' found'))
-
-    config.projects = config.projects || {}
-    config.plugins  = config.plugins || {}
-
-    command = commands[cmd]();
-    command.config     = config;
-    command.configPath = configPath;
-    command.args   = args;
-    command.run();
-
-    function lib(){
-        return function(){
-            return require('../lib/'+file+'.js');
-        }
-    }
-
-    function use(file){
-        return function(){
-            return require('../cmd/'+file);
-        }
-    }
-
-// 1800-743-5000
+// If the command exists require that file and run it
+if (commands[args[0]]) require('../cmd/' + args[0])();
+// Else run help
+else {
+    require('../cmd/help')();
+    Err('Command not found');
+    return;
+}
