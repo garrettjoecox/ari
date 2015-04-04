@@ -1,22 +1,14 @@
-/*
-    ari help
- */
 
-'use strict';
+var Pre = require('../lib/logger').Pre;
 
-var HELP = (function(){
+module.exports = function(){
 
-    module.exports.run = function(config, args, action, selector, target) {
+    Pre('')
+    Pre('This is the help menu');
+    Pre('')
+    Pre('ari add');
+    Pre('ari delete');
+    Pre('ari etc');
+    Pre('')
 
-
-        console.log('')
-        console.log('')
-        console.log('')
-        console.log('Help Command')
-        console.log('')
-        console.log('')
-        console.log('')
-
-    }
-
-})();
+};
