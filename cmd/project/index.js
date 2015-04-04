@@ -39,14 +39,21 @@ module.exports = function(){
      */
     function validate(){
 
-        if (!action && !actions[action]) {
+        if (!project) {
+            Err('')
+            Err('Project -> ${a} does not Exist!', args[1])
+            Err('')
+            exit()
+        }
+
+        if (!action || !actions[action]) {
             Err('')
             Err('Action ${a} not found!', action)
             Err('')
             exit()
         }
 
-        if (!target && !targets[target]) {
+        if (!target || !targets[target]) {
             Err('')
             Err('Target ${a} not found!', target)
             Err('')
