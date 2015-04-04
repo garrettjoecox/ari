@@ -2,9 +2,19 @@ var
 /*
     Dependencies
  */
-          templates = path.join.bind(path, path.join(__dirname, '../../templates'))
+
+          path = require('path')
+        , _    = require('lodash')
+        , gulpTemplate = require('gulp-template')
+        , rename     = require('gulp-rename')
+        , gulp       = require('gulp')
+        , lib        = require('../../lib')
+        , logger     = lib('logger')
+        , Err        = logger.Err
+        , Ok         = logger.Ok
+        , templates = path.join.bind(path, path.join(__dirname, '../../templates'))
         , defaults  = {
-              name       : name
+              name       : ''
             , imports    : [{name:'Behavior', from:'aurelia-templating'}]
             , exporting  : true
             , inherits   : false
@@ -13,8 +23,8 @@ var
             , prototypes : ['ageChanged']
             , params     : ['one', 'two']
           }
-        , filters = {}
-              class   : {}
+        , filters = {
+              class   : defaults
             , element : {
                   imports    : [{name:'Behavior', from:'aurelia-templating'}]
                 , metadata   : []
@@ -33,11 +43,14 @@ var
                 index: true
               }
           }
-        , dirs : {
-              class: '**/*'
+        , dirs = {
+              class: {
+                all: '**/*'
+              }
             , element : {
-                  model: 'model/*'
-                , view : 'view/*'
+                  model: '/model/*'
+                , view : '/view/*'
+                , all  : '/**/*'
               }
         }
 ;
@@ -45,30 +58,37 @@ var ADD = module.exports = (function(){
     return function(config, project, action, target, name){
 
         var
-            sourceDir = templates(target)
+              source
+            , filter
+            , sourceDir = templates(target)
+            , dest    = path.join(config.root, (project.path || '/projects/'+project.name), 'src', name);
         ;
 
+        source = sourceDir + dirs[target].all
 
+        filter = _.extend(defaults, filters[target]);
 
+        ////////////////
 
+        gulp.task('add', function(done){
+            gulp.src(source)
+                .pipe(gulpTemplate(filter))
+                .pipe(rename(function(file){
+                    if (file.basename === '_') {
+                        file.basename = _.kebabCase(name)
+                    }
+                    return file
+                }))
+                .pipe(gulp.dest(dest))
+                .on('end', function(){
+                    done();
+                    Ok('Finished creating ${a} ${b}', target, name)
+                    process.exit(0)
+                })
+        })
+
+        gulp.start('add');
     }
 
-    ////////////////
 
-    gulp.task('add', function(done){
-        gulp.src(source)
-            .pipe(gulpTemplate(filter))
-            .pipe(rename(function(file){
-                if (file.basename === '_') {
-                    file.basename = _.kebabCase(name)
-                }
-                return file
-            }))
-            .pipe(gulp.dest(dest))
-            .on('end', function(){
-                done();
-                log('Finished creating '.green+target + ' '+name)
-                process.exit(0)
-            })
-    })
 })()

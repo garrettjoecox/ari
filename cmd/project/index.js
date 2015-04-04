@@ -48,12 +48,16 @@ var PROJECT = module.exports = (function(){
             name : {
                 error:color.red('Name '+name+' Not found'),
                 ok   :color.green('Name '+name+' found'),
+            },
+            validated :{
+                  error : 'Issue validating project ${a}'
+                , ok    : 'Command project ${a} Validated'
             }
           }
         , actions = {
-              add     : 'add'
-            , del     : 'del'
-            , delete  : 'delete'
+              add     : use('add')
+            , del     : use('delete')
+            , delete  : use('delete')
           }
         , targets = {
               class     : 'class'
@@ -72,57 +76,42 @@ var PROJECT = module.exports = (function(){
     function run(){
 
         /*
-
             [ai] [Error]: Command add found and using project
          */
         config  = this.config;
         args    = this.args;
         project = config.projects[args[1]];
-        action  = args[2];
-        target  = args[3];
-        name    = args[4];
+        action  = String(args[2]);
+        target  = String(args[3]);
+        name    = String(args[4]);
         return this.validate();
     }
 
     function validate(){
 
-        (action && actions[action]) ? Ok(msgs.action.ok, action) : (Err(msgs.action.error, String(action)), exit())
-        (target && targets[target]) ? Ok(msgs.target.ok) : (Err(msgs.target.error), exit())
+        (action && actions[action]) ? Ok(msgs.action.ok, action) : (Err(msgs.action.error, action), exit())
+        (target && targets[target]) ? Ok(msgs.target.ok, target) : (Err(msgs.target.error, action), exit())
 
-        (name)   ? log(msgs.name.  ok) : (log(msgs.name.  error), exit())
+        (name) ? log(msgs.name.  ok) : (log(msgs.name.  error), exit())
 
-        log('Command '.green+' project '.blue+project.name.blue+' Validated'.green)
+        Ok(msgs.validated.ok, project.name)
 
         return this.finish()
     }
 
     function finish() {
-
-        source  = templates(target + '/**/*')
-        dest    = path.join(config.root, (project.path || '/projects/'+project.name), 'src', name);
-        gulp.task('default', function(done){
-            gulp.src(source)
-                .pipe(gulpTemplate(filter))
-                .pipe(rename(function(file){
-                    if (file.basename === '_') {
-                        file.basename = _.kebabCase(name)
-                    }
-                    return file
-                }))
-                .pipe(gulp.dest(dest))
-                .on('end', function(){
-                    done();
-                    log('Finished creating '.green+target + ' '+name)
-                    process.exit(0)
-                })
-        })
-
-        gulp.start('default')
+        return actions[action]()(config, project, action, target, name);
     }
 
     function exit(num){
         num = num || 0;
         process.exit(num)
+    }
+
+    function use(val){
+        return function(){
+            return require(__dirname + '/'+val)
+        }
     }
 
 
