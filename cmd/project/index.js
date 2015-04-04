@@ -31,7 +31,8 @@ module.exports = function(){
       , target  = String(args[3])
       , name    = String(args[4])
     ;
-    return validate();
+
+    validate();
 
     /*
         VALIDATE
