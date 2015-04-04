@@ -1,4 +1,14 @@
+/*
+ *  @prompts   ADD
+ *
+ *  @action    ADD
+ *  @command   PROJECT
+ */
+'use strict'
+
+
 var collect = require('lodash/collection/collect')
+
 module.exports = function(target) {
     return [
         {
