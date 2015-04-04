@@ -1,93 +1,54 @@
-/*
-    ari add [selector] [name]
- */
 
-'use strict';
-var
-      selector
-    , action
-    , target
-    , plural
-    , color      = require('colors')
-    , inflection = require('inflection')
-    , mkdirp     = require('mkdirp')
-    , _f         = require('fs-utils')
-    , selectors  = {
-          plugin:'plugin'
-        , project:'project'
-      }
-    , log        = console.log
+module.exports = function(){
 
-    , ADD;
+    var Err = require('../lib/logger').Err;
+    var Ok = require('../lib/logger').Ok;
+    var selector = process.ARI.args[1];
+    var action = process.ARI.args[0];
+    var target = process.ARI.args[2];
+    var pselector = selector + 's';
+    var mkdirp = require('mkdirp');
+    var _f = require('fs-utils');
 
+    var selectors = {
+        project: 'projects',
+        plugin: 'plugins'
+    };
 
-ADD = module.exports = (function(){
-    var
-    /*
-        Vars
-     */
-
-
-
-    /*
-        Methods
-     */
-        run = function() {
-            action   = this.args[0];
-            selector = this.args[1];
-            target   = this.args[2];
-
-            plural = {
-                selector: inflection.pluralize(selector)
-            }
-
-            if (!selectors[selector]) {
-                log('No Selector Found'.red)
-                log('Please provide a selector'.blue)
-                log(color.blue('ari '+action+' <plugin | project> [target]'))
-                process.exit(0);
-            }
-            log(color.green('Selector found '+selector))
-
-            if (!target) {
-                log('No target found'.red)
-                log(color.blue('Please provide a target'))
-                log(color.blue('ari '+action+' '+selector+' [target]'));
-                process.exit(0);
-            }
-            log(color.green('Target found '+target))
-
-
-            if (this.config[plural.selector][target]) {
-                log(color.red(selector+' '+target+ ' already exists!'))
-                log(color.blue('Please choose another name'))
-                process.exit(0);
-            }
-
-            log(color.green('Target does not exist continue'))
-
-            this.finish()
-            console.log(this.config)
-
-
-        },
-
-        finish = function(){
-
-            this.config[plural.selector] = this.config[plural.selector] || {};
-            this.config[plural.selector][target] = {name:target, path:'/'+plural.selector + '/' + target}
-            _f.writeJSONSync(this.configPath, this.config);
-            mkdirp(this.config.root + '/'+ this.config[plural.selector][target].path, function(err, result){
-                if(err){
-                    log(err.red)
-                }
-                log(result.green)
-            })
-        };
-
-    return {
-          finish:finish
-        , run:run
+    if (!selectors[selector]){
+        Err('');
+        Err('Please provide a valid selector!');
+        Err('-> ari add [project/plugin] [name]');
+        Err('');
+        return;
     }
 
-})();
+    if (!target){
+        Err('');
+        Err('Please provide name!');
+        Err('-> ari add [project/plugin] [name]');
+        Err('');
+        return;
+    }
+
+    if (process.ARI.config[pselector][target]){
+        Err('');
+        Err('The ${a} ${b} already exists!', selector, target);
+        Err('Please try another name');
+        Err('');
+        return;
+    }
+
+    process.ARI.config[pselector] = process.ARI.config[pselector] || {};
+    process.ARI.config[pselector][target] = { name:target, path:'/' + pselector + '/' + target };
+    _f.writeJSONSync(process.ARI.configPath, process.ARI.config);
+    mkdirp(process.ARI.config.root + '/' + process.ARI.config[pselector][target].path, function(err, result){
+        if (err){
+            Err('');
+            Err(err);
+            Err('');
+        } else {
+            Ok('The ${a} ${b} has been created!', selector, target);
+        }
+    });
+}
