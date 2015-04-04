@@ -67,19 +67,15 @@ var PROJECT = module.exports = (function(){
           }
     ;
 
-    return {
-          run      : run
-        , finish   : finish
-        , validate : validate
-    }
+    return run
 
     function run(){
 
         /*
             [ai] [Error]: Command add found and using project
          */
-        config  = this.config;
-        args    = this.args;
+        config  = process.ARI.config;
+        args    = process.ARI.args;
         project = config.projects[args[1]];
         action  = String(args[2]);
         target  = String(args[3]);

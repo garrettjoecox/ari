@@ -137,52 +137,47 @@ project:
 
 ## Conventions of commit messages
 
-Addding files on repo
+Adding Commands
 
 ```bash
-git commit -m "Add filename"
+git commit -m "Add command(<command-name>): command description"
 ```
 
-Updating files on repo
+Updating commands
 
 ```bash
-git commit -m "Update filename, filename2, filename3"
+git commit -m "Update command(<command-name>): update description"
 ```
 
-Removing files on repo
+Removing commands
 
 ```bash
-git commit -m "Remove filename"
+git commit -m "Remove command(<command-name>): reason"
 ```
 
-Renaming files on repo
-
-```bash
-git commit -m "Rename filename"
-```
 
 Fixing errors and issues on repo
 
 ```bash
-git commit -m "Fixed #issuenumber Message about this fix"
+git commit -m "Fixed issue(<#issuenumber>) Description about this fix"
 ```
 
 Adding features on repo
 
 ```bash
-git commit -m "Add Feature: nameoffeature Message about this feature"
+git commit -m "Add feature(<feature-name>) description about this feature"
 ```
 
 Updating features on repo
 
 ```bash
-git commit -m "Update Feature: nameoffeature Message about this update"
+git commit -m "Update feature(<feature-name>) description about this update"
 ```
 
 Removing features on repo
 
 ```bash
-git commit -m "Remove Feature: nameoffeature Message about this"
+git commit -m "Remove feature(<feature-name>) reason"
 ```
 
 Ignoring Travis CI build on repo
