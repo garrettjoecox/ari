@@ -5,9 +5,9 @@ var logger = require('../lib/logger');
 // Declares Ari object and attaches logger and arguments
 process.ARI = {
   args: process.argv.slice(2),
-  err: logger.Err,
-  ok: logger.Ok,
-  log: logger.Pre
+  err: logger.err,
+  ok: logger.ok,
+  log: logger.log
 };
 var Ari = process.ARI;
 
