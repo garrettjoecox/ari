@@ -1,54 +1,42 @@
 #!/usr/bin/env node
 
-/* Main 'ari' routing command */
+var logger = require('../lib/logger');
 
-var args = process.argv.slice(2);
+// Declares Ari object and attaches logger and arguments
+process.ARI = {
+  args: process.argv.slice(2),
+  err: logger.Err,
+  ok: logger.Ok,
+  log: logger.Pre
+};
+var Ari = process.ARI;
 
-if (!args.length){
-    require('../cmd/help')();
-    return;
-}
-
-var fs = require('fs');
-var Err = require('../lib/logger').Err;
-var configPath = process.cwd() + '/.ari-config.json';
-
-if (!fs.existsSync(configPath)){
-    Err('Config not found');
-    Err('Please run ari init');
-    return;
-}
-
-var config = fs.readFileSync(configPath);
-
-if (!config.length){
-    Err('Config file is empty');
-    Err('Please run ari init');
-    return;
-}
-
-config = JSON.parse(config);
+// Declares possible commands and their locations
 var commands = {
-    init:    'init',
-    help:    'help',
-    link:    'link',
-    add:     'add',
-    del:     'delete',
-    delete:  'delete',
-    project: 'project',
-}
+  project: '../cmd/project',
+  delete: '../cmd/delete',
+  del: '../cmd/delete',
+  help: '../cmd/help',
+  init: '../cmd/init',
+  link: '../cmd/link',
+  add: '../cmd/add',
+};
 
-config.projects = config.projects || {};
-if (config.projects[args[0]]) args.unshift('project');
+// If there are no arguments run help
+if (!Ari.args.length) require(commands.help)();
 
-process.ARI = {};
-process.ARI.args = args;
-process.ARI.config = config;
-process.ARI.configPath = configPath;
+// Check if you're in an ari directory and attach config to process.Ari
+require('../cmd/directoryValidate')();
 
-if (commands[args[0]]) require('../cmd/' + commands[args[0]])();
-else {
-    require('../cmd/help')();
-    Err('Command not found');
-    return;
+// Run the passed in command if it's a valid command
+// If the command passed is the name of a project, unshift 'project' and run it
+if (commands[Ari.args[0]]) {
+  require(commands[Ari.args[0]])();
+} else if (Ari.config.projects[Ari.args[0]]) {
+  Ari.args.unshift('project');
+  require(commands.project)();
+} else {
+  Ari.err();
+  Ari.err('Invalid command');
+  Ari.err();
 }
