@@ -10,6 +10,7 @@ var logger     = require('../../lib/logger')
   , Ok         = logger.Ok
   , actions = {
           add     : './add'
+        , watch   : './watch'
         , del     : './delete'
         , delete  : './delete'
     }
@@ -53,18 +54,22 @@ module.exports = function(){
             exit()
         }
 
-        if (!target || !targets[target]) {
-            Err('')
-            Err('Target ${a} not found!', target)
-            Err('')
-            exit()
-        }
+        if (action !== 'watch') {
 
-        if (!name) {
-            Err('')
-            log('Name ${a} not found!', name)
-            Err('')
-            exit()
+          console.log(args)
+          if (!target || !targets[target]) {
+              Err('')
+              Err('Target ${a} not found!', target)
+              Err('')
+              exit()
+          }
+
+          if (!name) {
+              Err('')
+              log('Name ${a} not found!', name)
+              Err('')
+              exit()
+          }
         }
 
         Ok('Command project ${a} Validated', project.name)

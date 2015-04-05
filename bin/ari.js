@@ -29,12 +29,13 @@ if (!config.length){
 
 config = JSON.parse(config);
 var commands = {
-    init: true,
-    help: true,
-    add: true,
-    del: true,
-    delete: true,
-    project: true,
+    init:    'init',
+    help:    'help',
+    link:    'link',
+    add:     'add',
+    del:     'delete',
+    delete:  'delete',
+    project: 'project',
 }
 
 config.projects = config.projects || {};
@@ -45,7 +46,7 @@ process.ARI.args = args;
 process.ARI.config = config;
 process.ARI.configPath = configPath;
 
-if (commands[args[0]]) require('../cmd/' + args[0])();
+if (commands[args[0]]) require('../cmd/' + commands[args[0]])();
 else {
     require('../cmd/help')();
     Err('Command not found');

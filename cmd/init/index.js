@@ -29,6 +29,12 @@ module.exports = (function(){
             config.holding  = config.holding  || {};
             config.plugins  = config.plugins  || {};
             config.using    = config.using    || {};
+            config.defaults = {
+                template :{
+                    project:"skeleton-navigation",
+                    plugin :"skeleton-plugin"
+                }
+            }
 
             write(configPath, config, finish);
         }
