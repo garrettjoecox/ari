@@ -1,100 +1,66 @@
 
+var Ari = process.ARI;
+var name = Ari.args[2];
+var selector = Ari.args[1];
+var pselector = selector + 's';
+var types = { project:true, plugin:true };
+var write = require('fs-utils').writeJSON;
+
 module.exports = function(){
 
-    var logger = require('../../lib/logger');
-    var Err = logger.Err;
-    var Ok = logger.Ok;
-    var selector = process.ARI.args[1];
-    var action = process.ARI.args[0];
-    var target = process.ARI.args[2];
-    var pselector = selector + 's';
-    var mkdirp = require('mkdirp');
-    var write = require('fs-utils').writeJSON
-    var task     = require('./task.js')
-    var source, dest
-
-    var selectors = {
-        project: 'projects',
-        plugin: 'plugins'
-    };
-
-    if (!selectors[selector]){
-        Err('');
-        Err('Please provide a valid selector!');
-        Err('-> ari add [project/plugin] [name]');
-        Err('');
-        return;
+    if (!selector){
+        Ari.err();
+        Ari.err('Please provide a selector and a name!', selector);
+        Ari.err('$ ari add [project/plugin] [name]');
+        Ari.err();
+        process.exit(0);
     }
 
-    if (!target){
-        Err('');
-        Err('Please provide name!');
-        Err('-> ari add [project/plugin] [name]');
-        Err('');
-        return;
+    if (!types[selector]){
+        Ari.err();
+        Ari.err('Invalid type: ${a}', selector);
+        Ari.err('Valid types: project / plugin');
+        Ari.err();
+        process.exit(0);
     }
 
-    if (process.ARI.config[pselector][target]){
-        Err('');
-        Err('The ${a} ${b} already exists!', selector, target);
-        Err('Please try another name');
-        Err('');
-        return;
+    if (Ari.config[pselector][name]){
+        Ari.err();
+        Ari.err('The ${a} ${b} already exists!', selector, name);
+        Ari.err('Try another name');
+        Ari.err();
+        process.exit(0);
     }
 
-    process.ARI.config[pselector] = process.ARI.config[pselector] || {};
-    process.ARI.config[pselector][target] = { name:target, path:'/' + pselector + '/' + target };
+    Ari.config[pselector] = Ari.config[pselector] || {};
+    Ari.config[pselector][name] = { name:name, path:'/' + pselector + '/' + name };
 
+    var sourceRoot = Ari.config.root + '/templates/' + Ari.config.defaults.template[selector];
+    var source = sourceRoot + '/**/*';
+    var dest = Ari.config.root + Ari.config[pselector][name].path;
 
-    var sourceRoot = process.ARI.config.root + '/templates/' + process.ARI.config.defaults.template[selector]
+    require('./task.js')(source, dest, {}, onEnd, onError).start('add');
 
-    source = sourceRoot + '/**/*';
-    dest = process.ARI.config.root + process.ARI.config[pselector][target].path;
-
-    task(source, dest, {}, onEnd, onError).start('add');
-
-
-
-    /////////////////////
-
-    /*
-        ON ERROR
-     */
     function onError(cb) {
         return function(){
-            Err('')
-            Err('Issue running adding project -> ${a}', target)
-            Err('')
+            Ari.err();
+            Ari.err('There was an issue creating the ${a} ${b}', selector, name);
+            Ari.err();
             process.exit(0);
-        }
+        };
     }
 
-
-    /*
-        ON END
-     */
     function onEnd(cb) {
         return function(){
-            write(process.ARI.configPath, process.ARI.config, function(err){
+            write(Ari.config.path, Ari.config, function(err){
                 if (err) {
-                    onError(cb)()
+                    onError(cb)();
                 }
-                Ok('')
-                Ok('Finished creating project -> ${a}', target)
-                Ok('')
+                Ari.ok();
+                Ari.ok('Finished creating the ${a} ${b}', selector, name);
+                Ari.ok();
                 process.exit(0);
             });
-        }
+        };
     }
-
-
-    // mkdirp(process.ARI.config.root + '/' + process.ARI.config[pselector][target].path, function(err, result){
-    //     if (err){
-    //         Err('');
-    //         Err(err);
-    //         Err('');
-    //     } else {
-    //         Ok('The ${a} ${b} has been created!', selector, target);
-    //     }
-    // });
-}
+};

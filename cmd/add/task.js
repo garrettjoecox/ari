@@ -1,5 +1,6 @@
-var gulp     = require('gulp')
-var template = require('gulp-template')
+
+var gulp     = require('gulp');
+var template = require('gulp-template');
 
 module.exports = function(source, dest, filter, onEnd, onError){
 
@@ -9,8 +10,8 @@ module.exports = function(source, dest, filter, onEnd, onError){
             // .pipe(template(filter))
             .pipe(gulp.dest(dest))
             .on('end', onEnd(done))
-            .on('error', onError(done))
-    })
+            .on('error', onError(done));
+    });
 
-    return gulp
-}
+    return gulp;
+};
