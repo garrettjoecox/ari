@@ -1,55 +1,50 @@
 
+var Ari = process.ARI;
+var name = Ari.args[2];
+var del = require('del');
+var selector = Ari.args[1];
+var pselector = selector + 's';
+var types = { project:true, plugin:true };
+var write = require('fs-utils').writeJSONSync;
+
 module.exports = function(){
 
-    var Err = require('../lib/logger').Err;
-    var Ok = require('../lib/logger').Ok;
-    var del = require('del');
-    var selector = process.ARI.args[1];
-    var action = process.ARI.args[0];
-    var target = process.ARI.args[2];
-    var pselector = selector + 's';
-    var mkdirp = require('mkdirp');
-    var _f = require('fs-utils');
-
-    var selectors = {
-        project: 'projects',
-        plugin: 'plugins'
-    };
-
-    if (!selectors[selector]){
-        Err('');
-        Err('Please provide a valid selector!');
-        Err('-> ari add [project/plugin] [name]');
-        Err('');
-        return;
+    if (!selector){
+        Ari.err();
+        Ari.err('Please provide a selector and a name!', selector);
+        Ari.err('$ ari add [project/plugin] [name]');
+        Ari.err();
+        process.exit(0);
     }
 
-    if (!target){
-        Err('');
-        Err('Please provide name!');
-        Err('-> ari add [project/plugin] [name]');
-        Err('');
-        return;
+    if (!types[selector]){
+        Ari.err();
+        Ari.err('Invalid type: ${a}', selector);
+        Ari.err('Valid types: project / plugin');
+        Ari.err();
+        process.exit(0);
     }
 
-    if (!process.ARI.config[pselector][target]){
-        Err('');
-        Err('The ${a} ${b} does not exist!', selector, target);
-        Err('Please try again');
-        Err('');
-        return;
+    if (!Ari.config[pselector][name]){
+        Ari.err();
+        Ari.err("The ${a} ${b} doesn't exist!", selector, name);
+        Ari.err('Please try again');
+        Ari.err();
+        process.exit(0);
     }
 
-    var dest = process.ARI.config.root + process.ARI.config[pselector][target].path;
-    delete process.ARI.config[pselector][target];
-    _f.writeJSONSync(process.ARI.configPath, process.ARI.config);
+    var dest = Ari.config.root + Ari.config[pselector][name].path;
+    delete Ari.config[pselector][name];
+    write(Ari.config.path, Ari.config);
     del(dest, function(err){
         if (err){
-            Err('');
-            Err(err);
-            Err('');
+            Ari.err();
+            Ari.err('There was an issue deleting the ${a} ${b}', selector, name);
+            Ari.err();
         } else {
-            Ok('The ${a} ${b} has been deleted!', selector, target);
+            Ari.ok();
+            Ari.ok('Finished deleting the ${a} ${b}', selector, name);
+            Ari.ok();
         }
-    })
-}
+    });
+};
