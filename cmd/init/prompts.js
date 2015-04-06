@@ -1,15 +1,12 @@
-var basename = require('path').basename
 
-module.exports = (function(){
+var Ari = process.ARI;
+var basename = require('path').basename;
 
-    var config = process.ARI.config
-
-    return [
-        {
-              type : 'input'
-            , name : 'name'
-            , message : 'Name?'
-            , default : config.name || basename(process.cwd())
-        }
-    ];
-})()
+module.exports = [
+    {
+        type : 'input',
+        name : 'name',
+        message : 'Name?',
+        default : Ari.config.name || basename(process.cwd())
+    }
+];
