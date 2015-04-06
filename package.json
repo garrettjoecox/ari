@@ -1,12 +1,9 @@
 {
   "name": "ari",
   "description": "Aurelia Schaffolding Command Line Interface",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/joelcoxokc/ari",
-  "author": {
-    "name": "JoelCox",
-    "email": "joelcox@hisimagination.com"
-  },
+  "author": "JoelCox <joelcox@hisimagination.com>",
   "repository": {
     "type": "git",
     "url": "git://github.com/joelcoxokc/ari.git"
@@ -67,5 +64,6 @@
     "aurelia",
     "aurelia-interface",
     "generator"
-  ]
+  ],
+  "license": "ISC"
 }
