@@ -1,41 +1,50 @@
-var gulp   = require('gulp')
-var shell  = require('gulp-shell')
-var logger = require('../lib/logger')
-var Err    = logger.Err
-var Ok     = logger.Ok
+
+var Ari = process.ARI;
+var project = Ari.args[1];
+var gulp = require('gulp');
+var shell = require('gulp-shell');
 
 module.exports = function() {
-    var config  = process.ARI.config;
-    var args    = process.ARI.args;
-    var project = config.projects[args[1]]
-    var plugin  = config.plugins[args[2]]
+
+    if (Ari.args.length < 3){
+        Ari.err();
+        Ari.err('Please provide a project and a plugin!');
+        Ari.err('$ ari link [project] [plugin]');
+        Ari.err();
+        process.exit(0);
+    }
+
+    var project = Ari.config.projects[Ari.args[1]];
+    var plugin = Ari.config.plugins[Ari.args[2]];
 
     if (!project) {
-        Err('')
-        Err('Project ${a} not found!', args[1])
-        Err('')
-        process.exit(0)
+        Ari.err();
+        Ari.err('The project ${a} does not exist!', Ari.args[1]);
+        Ari.err();
+        process.exit(0);
     }
 
     if (!plugin) {
-        Err('')
-        Err('Plugin ${a} not found!', args[2])
-        Err('')
-        process.exit(0)
+        Ari.err();
+        Ari.err('The plugin ${a} does not exist!', Ari.args[2]);
+        Ari.err();
+        process.exit(0);
     }
 
-    link().start('link');
-
-    function link() {
-        gulp.task('link', shell.task([
-              'cd plugins/'+plugin.name
-            , 'jspm link -y'
-            , 'cd '+config.root
-            , 'cd projects/'+project.name
-            , 'jspm install -link github:'+config.name + '/' + plugin.name + '@master'
-            , 'cd '+config.root
-        ]))
-
-        return gulp
-    }
-}
+    gulp.task('link', shell.task([
+        'cd plugins/' + plugin.name + ' && jspm link -y github:' + Ari.config.name + '/' + plugin.name + '@master',
+        'cd projects/' + project.name + ' && jspm install -l github:' + Ari.config.name + '/' + plugin.name + '@master'
+    ])).start(function(err){
+        if (err){
+            Ari.err();
+            Ari.err('There was an issue linking the plugin ${a} to ${b}', plugin.name, project.name);
+            Ari.err();
+            process.exit(0);
+        } else {
+            Ari.ok();
+            Ari.ok('The plugin ${a} has been linked to ${b}', plugin.name, project.name);
+            Ari.ok();
+            process.exit(0);
+        }
+    });
+};
