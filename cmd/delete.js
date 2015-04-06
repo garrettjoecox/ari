@@ -9,7 +9,7 @@ var write = require('fs-utils').writeJSONSync;
 
 module.exports = function(){
 
-    if (!selector){
+    if (Ari.args.length < 3){
         Ari.err();
         Ari.err('Please provide a selector and a name!', selector);
         Ari.err('$ ari add [project/plugin] [name]');

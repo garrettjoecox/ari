@@ -15,6 +15,7 @@ var Ari = process.ARI;
 var commands = {
   project: '../cmd/project',
   delete: '../cmd/delete',
+  stash: '../cmd/stash',
   del: '../cmd/delete',
   help: '../cmd/help',
   init: '../cmd/init',
