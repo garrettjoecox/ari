@@ -14,6 +14,7 @@ var Ari = process.ARI;
 // Declares possible commands and their locations
 var commands = {
   project: '../cmd/project',
+  restore: '../cmd/restore',
   delete: '../cmd/delete',
   stash: '../cmd/stash',
   del: '../cmd/delete',
