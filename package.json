@@ -20,7 +20,7 @@
       "url": "https://github.com/joelcoxokc/ari/blob/master/LICENSE"
     }
   ],
-  "main": "lib/ari",
+  "main": "index.js",
   "bin": {
     "ari": "bin/ari.js"
   },
@@ -31,10 +31,6 @@
     "test": "gulp test"
   },
   "dependencies": {
-    "blessed": "0.0.51",
-    "cli-table2": "^0.1.5",
-    "colors": "~0.6.2",
-    "commander": "~2.1.0",
     "del": "^1.1.1",
     "event-stream": "^3.3.0",
     "fs-utils": "^0.6.0",
@@ -46,7 +42,6 @@
     "gulp-rimraf": "^0.1.1",
     "gulp-sequence": "^0.3.2",
     "gulp-shell": "^0.3.0",
-    "gulp-storage": "^1.0.6",
     "gulp-template": "^3.0.0",
     "inflection": "^1.7.0",
     "inquirer": "~0.4.1",
@@ -54,11 +49,8 @@
     "lodash": "^3.6.0",
     "mkdirp": "^0.5.0",
     "moment": "^2.9.0",
-    "prettyjson": "~0.11.1",
     "rmdirp": "^0.1.0",
-    "rx": "^2.4.6",
     "superagent": "~0.16.0",
-    "underscore": "~1.5.2",
     "update-notifier": "~0.1.7"
   },
   "devDependencies": {
@@ -71,6 +63,9 @@
   "keywords": [
     "cli",
     "tool",
-    "app"
+    "app",
+    "aurelia",
+    "aurelia-interface",
+    "generator"
   ]
 }

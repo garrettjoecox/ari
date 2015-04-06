@@ -39,7 +39,7 @@ module.exports = function(){
     var source = sourceRoot + '/**/*';
     var dest = Ari.config.root + Ari.config[pselector][name].path;
 
-    require('./task.js')(source, dest, {}, onEnd, onError).start('add');
+    require('./task.js')(source, dest, {name:name}, onEnd, onError).start('add');
 
     function onError(cb) {
         return function(){

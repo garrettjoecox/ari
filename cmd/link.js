@@ -3,6 +3,7 @@ var Ari = process.ARI;
 var project = Ari.args[1];
 var gulp = require('gulp');
 var shell = require('gulp-shell');
+var write = require('fs-utils').writeJSONSync
 
 module.exports = function() {
 
@@ -41,6 +42,12 @@ module.exports = function() {
             Ari.err();
             process.exit(0);
         } else {
+
+            Ari.config.projects[project.name].plugins = Ari.config.projects[project.name].plugins || {};
+            Ari.config.projects[project.name].plugins[plugin.name] = {watch:true};
+
+            write(Ari.config.path, Ari.config);
+
             Ari.ok();
             Ari.ok('The plugin ${a} has been linked to ${b}', plugin.name, project.name);
             Ari.ok();

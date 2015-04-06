@@ -33,9 +33,9 @@ var Ari = function(){
 
     this.project  = process.ARI.config.projects[name];
     this.plugins  = this.project.plugins;
-    this.jspmPath = config.root + this.project.path + '/jspm_packages/github/'+name+'/'
+    this.jspmPath = config.root + this.project.path + '/jspm_packages/github/'+config.name+'/'
     this._watching = {};
-    this.project.output = "/Users/joelcox1/Dev/Libraries/aurelia-interface/projects/"+name+"/jspm_packages/github/"+name+"/"
+    this.project.output = "/Users/joelcox1/Dev/Libraries/aurelia-interface/projects/"+name+"/jspm_packages/github/"+config.name+"/"
     var projectConfig = {
         project: this.project
     }
