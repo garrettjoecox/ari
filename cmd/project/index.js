@@ -4,10 +4,11 @@
  */
 'use strict'
 
-
+var Ari = process.ARI;
 var logger     = require('../../lib/logger')
-  , Err        = logger.Err
-  , Ok         = logger.Ok
+  // , generators = require('../../lib/generators')
+  , Err        = Ari.err
+  , Ok         = Ari.ok
   , actions = {
           add     : './add'
         , watch   : './watch'
@@ -24,7 +25,6 @@ var logger     = require('../../lib/logger')
 ;
 
 module.exports = function(){
-
     var config  = process.ARI.config
       , args    = process.ARI.args
       , project = config.projects[args[1]]
@@ -39,7 +39,6 @@ module.exports = function(){
         VALIDATE
      */
     function validate(){
-
         if (!project) {
             Err('')
             Err('Project -> ${a} does not Exist!', args[1])
@@ -56,7 +55,7 @@ module.exports = function(){
 
         if (action !== 'watch') {
 
-          console.log(args)
+          // console.log(args)
           if (!target || !targets[target]) {
               Err('')
               Err('Target ${a} not found!', target)

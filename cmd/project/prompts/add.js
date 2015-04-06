@@ -53,12 +53,7 @@ module.exports = function(target) {
             , name : 'metadata'
             , message : 'metadata/Behavior properties?'
             , when    : isAttrOrElement
-            , filter  : function(value) {
-                value = value.split(':')
-                return collect(value, function(item){
-                    return item.split(',')
-                })
-              }
+            , filter  : list
         },{
               type : 'input'
             , name : 'getters'
@@ -79,7 +74,11 @@ module.exports = function(target) {
 
 
     function list(value) {
-        return value.trim().split(',')
+        var arr = [];
+        value.split(',').forEach(function(item, index){
+            if (item) arr.push(item)
+        })
+        return arr
     }
 
     function isAttrOrElement() {
