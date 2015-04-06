@@ -1,55 +1,48 @@
-var
-/*
- *     Dependencies
- *
- */
-        ask        = require('inquirer').prompt
-      , extend     = require('lodash/object/extend')
-      , prompts    = require('./prompts')
-      , write      = require('fs-utils').writeJSON
-      , configPath = process.cwd() + '/.ari-config.json'
-      , logger     = require('../../lib/logger')
-      , Err        = logger.Err
-      , Ok         = logger.Ok
-;
-module.exports = (function(){
 
-    var config = process.ARI.config
+var Ari = process.ARI;
+var fs = require('fs');
+var ask = require('inquirer').prompt;
+var write = require('fs-utils').writeJSON;
+var configPath = process.cwd() + '/.ari-config.json';
 
-    return function(){
+module.exports = function(){
 
-        ask(prompts, save)
+    if (fs.existsSync(configPath)) {
+        Ari.config = require(configPath);
+    } else Ari.config = {};
 
-        function save(answers) {
+    ask(require('./prompts'), save);
 
-            config.name     = answers.name;
-            config.root     = process.cwd();
-            config.paths    = config.paths    || {holding   : "/.holding", templates : "/templates"};
-            config.projects = config.projects || {};
-            config.holding  = config.holding  || {};
-            config.plugins  = config.plugins  || {};
-            config.using    = config.using    || {};
-            config.defaults = {
-                template :{
-                    project:"skeleton-navigation",
-                    plugin :"skeleton-plugin"
-                }
+    function save(answers) {
+
+        Ari.config.name = answers.name;
+        Ari.config.path = configPath;
+        Ari.config.root = process.cwd();
+        Ari.config.paths = Ari.config.paths || {holding   : "/.holding", templates : "/templates"};
+        Ari.config.projects = Ari.config.projects || {};
+        Ari.config.holding = Ari.config.holding || {};
+        Ari.config.plugins = Ari.config.plugins || {};
+        Ari.config.using = Ari.config.using || {};
+        Ari.config.defaults = {
+            template :{
+                project:"skeleton-navigation",
+                plugin :"skeleton-plugin"
             }
+        };
 
-            write(configPath, config, finish);
-        }
-
-        function finish(err, result) {
-            if (err) {
-                Err('')
-                Err(err)
-                Err('')
-                process.exit(0)
-            }
-            Ok('')
-            Ok('${a} has been initialized', config.name)
-            Ok('')
-            process.exit()
-        }
+        write(configPath, Ari.config, finish);
     }
-})()
+
+    function finish(err) {
+        if (err) {
+            Ari.err();
+            Ari.err('There was an error initializing ${a}', Ari.config.name);
+            Ari.err();
+            process.exit(0);
+        }
+        Ari.ok();
+        Ari.ok('${a} has been initialized', Ari.config.name);
+        Ari.ok();
+        process.exit();
+    }
+};

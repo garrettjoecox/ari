@@ -1,14 +1,13 @@
 
-var Pre = require('../lib/logger').Pre;
+var Ari = process.ARI;
 
 module.exports = function(){
-
-    Pre('')
-    Pre('This is the help menu');
-    Pre('')
-    Pre('ari add');
-    Pre('ari delete');
-    Pre('ari etc');
-    Pre('')
-
+    Ari.log('');
+    Ari.log('Welcome to Ari');
+    Ari.log('');
+    Ari.log('Ari Init: ');
+    Ari.log('Ari Add: ');
+    Ari.log('Ari Delete: ');
+    Ari.log('');
+    process.exit(0);
 };
