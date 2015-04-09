@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
 var logger = require('../lib/logger');
-var path   = require('path')
+var path   = require('path');
+
 // Declares Ari object and attaches logger and arguments
 process.ARI = {
-    args : process.argv.slice(2) ,
-    err  : logger.err            ,
-    ok   : logger.ok             ,
-    log  : logger.log            ,
-    root : path.join.bind(path   , __dirname, '../')
+    root : path.join.bind(path, __dirname, '../'),
+    args : process.argv.slice(2),
+    log  : logger.log,
+    err  : logger.err,
+    ok   : logger.ok,
 };
 var Ari = process.ARI;
 
@@ -35,7 +36,15 @@ if (Ari.args[0] === 'init') require(commands.init)();
 
 else {
     // Check if you're in an ari directory and attach config to process.Ari
-    require('../cmd/directoryValidate')();
+    if (!require('fs').existsSync(process.cwd() + '/.ari-config.json')) {
+        Ari.err();
+        Ari.err("You're not in an ari directory!");
+        Ari.err('Try running ari init');
+        Ari.err();
+        process.exit(0);
+    }
+
+    Ari.config = require(process.cwd() + '/.ari-config.json');
 
     // Run the passed in command if it's a valid command
     // If the command passed is the name of a project, unshift 'project' and run it

@@ -4,7 +4,6 @@ var name = Ari.args[2];
 var selector = Ari.args[1];
 var pselector = selector + 's';
 var types = { project:true, plugin:true };
-var write = require('fs-utils').writeJSON;
 
 module.exports = function(){
 
@@ -52,7 +51,7 @@ module.exports = function(){
 
     function onEnd(cb) {
         return function(){
-            write(Ari.config.path, Ari.config, function(err){
+            require('fs-utils').writeJSON(Ari.config.path, Ari.config, function(err){
                 if (err) {
                     onError(cb)();
                 }
