@@ -1,11 +1,9 @@
 
 var Ari = process.ARI;
 var name = Ari.args[2];
-var del = require('del');
 var selector = Ari.args[1];
 var pselector = selector + 's';
 var types = { project:true, plugin:true };
-var write = require('fs-utils').writeJSONSync;
 
 module.exports = function(){
 
@@ -35,8 +33,8 @@ module.exports = function(){
 
     var dest = Ari.config.root + Ari.config[pselector][name].path;
     delete Ari.config[pselector][name];
-    write(Ari.config.path, Ari.config);
-    del(dest, function(err){
+    require('fs-utils').writeJSONSync(Ari.config.path, Ari.config);
+    require('del')(dest, function(err){
         if (err){
             Ari.err();
             Ari.err('There was an issue deleting the ${a} ${b}', selector, name);

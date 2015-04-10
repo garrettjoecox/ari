@@ -1,9 +1,9 @@
 
 var Ari = process.ARI;
-var types = { project:true, plugin:true };
 var name = Ari.args[3];
 var selector = Ari.args[2];
 var pselector = selector + 's';
+var types = { project:true, plugin:true };
 var commands = {
   add: './add',
   dump: './dump',

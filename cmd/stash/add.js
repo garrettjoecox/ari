@@ -4,13 +4,11 @@ var name = Ari.args[3];
 var gulp = require('gulp');
 var selector = Ari.args[2];
 var pselector = selector + 's';
-var moment = require('moment');
-var write = require('fs-utils').writeJSON;
 
 module.exports = function(){
 
     var origin = Ari.config.root + Ari.config[pselector][name].path + '/**/*';
-    var time = moment().format('MMM-DD-YY-h-mm-ss-a');
+    var time = require('moment')().format('MMM-DD-YY-h-mm-ss-a');
     var dest = Ari.config.paths.holding + Ari.config[pselector][name].path + '/';
     var stashName = Ari.args[4] || name + '-' + time;
 

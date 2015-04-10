@@ -1,6 +1,7 @@
 
 var gulp     = require('gulp');
 var template = require('gulp-template');
+
 module.exports = function(source, dest, filter, onEnd, onError){
 
     gulp.task('add', function(done){

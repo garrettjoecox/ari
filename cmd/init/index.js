@@ -1,17 +1,14 @@
 
 var Ari = process.ARI;
-var fs = require('fs');
-var ask = require('inquirer').prompt;
-var write = require('fs-utils').writeJSON;
 var configPath = process.cwd() + '/.ari-config.json';
 
 module.exports = function(){
 
-    if (fs.existsSync(configPath)) {
+    if (require('fs').existsSync(configPath)) {
         Ari.config = require(configPath);
     } else Ari.config = {};
 
-    ask(require('./prompts'), save);
+    require('inquirer').prompt(require('./prompts'), save);
 
     function save(answers) {
 
@@ -30,7 +27,7 @@ module.exports = function(){
             }
         };
 
-        write(configPath, Ari.config, finish);
+        require('fs-utils').writeJSON(configPath, Ari.config, finish);
     }
 
     function finish(err) {
