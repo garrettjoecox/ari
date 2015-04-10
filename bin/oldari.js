@@ -36,6 +36,7 @@ var commands = {
     del:     'delete',
     delete:  'delete',
     project: 'project',
+    show   : 'show',
 }
 
 config.projects = config.projects || {};

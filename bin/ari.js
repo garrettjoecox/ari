@@ -24,6 +24,7 @@ var commands = {
     init    : '../cmd/init'    ,
     link    : '../cmd/link'    ,
     add     : '../cmd/add'     ,
+    show    : '../cmd/show'    ,
 };
 
 // If there are no arguments run help
