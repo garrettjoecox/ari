@@ -10,52 +10,20 @@ var gulp   = require(join(process.cwd(), 'node_modules/gulp'));
 var config;
 var ariInst;
 var project;
-process.ARI = {}
 
-if (exists(join(process.cwd(), '../', '../', '.ari-config.json'))) {
-    config = require(join(process.cwd(), '../', '../', '.ari-config.json'));
-    process.ARI.config = config;
-} else {
-    console.log('Ari Config not found!')
-    process.exit(0)
-    return;
-}
+var instances = {
+    project:{},
+    plugin:{}
+};
 
-var Ari = function(){
+process.ARI = {
+    config: require('./lib/config/getConfig')
+};
+
+var Ari = function(options){
     EventEmitter.call(this);
-
-    var name = path.basename(process.cwd());
-    if (!process.ARI.config.projects[name]) {
-        console.log('project '+ name + 'does not exist in you config!')
-        process.exit(0)
-        return;
-    }
-
-    this.project  = process.ARI.config.projects[name];
-    this.plugins  = this.project.plugins;
-    this.jspmPath = config.root + this.project.path + '/jspm_packages/github/'+config.name+'/'
-    this._watching = {};
-    this.project.output = "/Users/joelcox1/Dev/Libraries/aurelia-interface/projects/"+name+"/jspm_packages/github/"+config.name+"/"
-    var projectConfig = {
-        project: this.project
-    }
-
-    for (var pl in this.plugins) {
-        if (this.plugins[pl].watch) {
-            this._watching[pl] = process.ARI.config.plugins[pl];
-            write(config.root + this._watching[pl].path + '/build/project-config.json', projectConfig);
-        }
-    }
-
-    gulp.on('task_start', function(e){
-        if (e.task === 'watch') {
-            for (var pl in this.plugins) {
-                if (this.plugins[pl].watch) {
-                    this.watchPlugin(this.config.plugins[pl])
-                }
-            }
-        }
-    }.bind(this))
+    this.type = options[type]
+    this[options.type] = options;
 };
 
 util.inherits(Ari, EventEmitter);
@@ -93,20 +61,80 @@ Ari.prototype.get = function(target, name){
     return config[ptarget][name];
 };
 
-Ari.prototype.change = function(val){
+Ari.prototype.changed = function(opts){
+    this.emit(this.type + '_changed', {context:this, opts:opts})
 };
+
+
+Ari.prototype.watch = function(plugins, files) {
+
+    plugins.forEach(function(pl, key){
+        if (this.config[key]) {
+
+        }
+    }.bind(this));
+
+}
 
 
 Object.defineProperty(Ari.prototype, 'config', {
     get: function(){
         return process.ARI.config;
     }
-})
+});
 
+var Plugin = function(options){
+    this.type = 'plugin'
+    this.name = options.name;
+    this.root = options.path;
+    this.pkg  = require(this.path + '/package.json');
+    this.jspmHook = 'github:' + process.ARI.config.name + '/' + name + '@' + this.pkg.version;
+    this.paths = exists(this.path + '/build/paths.js') ? require(this.root + '/build/paths.js') : {};
+    this.gulpFile  = require(this.root + '/gulpfile');
+    this.gulp  = require(this.root + '/node_moduls/gulpfile');
+    return this;
+};
+
+var Project = function(options){
+    this.type = 'project'
+    this.name = options.name;
+    this.root = options.path;
+    this.pkg  = require(this.root + '/package.json');
+    this.paths = exists(this.root + '/build/paths.js') ? require(this.root + '/build/paths.js') : {};
+    this.gulpFile  = require(this.root + '/gulpfile');
+    this.gulp  = require(this.root + '/node_moduls/gulpfile');
+    return this;
+};
 
 module.exports = (function(){
-    if (!ariInst) {
-        ariInst = new Ari();
+
+    return {
+        Project: function(name){
+            name = name || path.basename(process.cwd());
+            if (!instances.project[name]) {
+                instances.project[name] = new Ari(new Project({
+                    name: name,
+                    path: process.cwd()
+                }));
+            }
+            return instances.project[name];
+        },
+        Plugin: function(name){
+            name = name || path.basename(process.cwd());
+            if (!instances.plugin[name]) {
+                instances.plugin[name] = new Ari(new Plugin({
+                    name: name,
+                    path: process.cwd()
+                }));
+            }
+            return instances.plugin[name];
+        }
     }
-    return ariInst;
-})()
+})();
+
+
+
+
+
+
+

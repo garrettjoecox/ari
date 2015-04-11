@@ -14,7 +14,7 @@ module.exports = function() {
 
     var project = Ari.config.projects[Ari.args[1]];
     var plugin = Ari.config.plugins[Ari.args[2]];
-
+    console.log(plugin)
     if (!project) {
         Ari.err();
         Ari.err('The project ${a} does not exist!', Ari.args[1]);
@@ -29,9 +29,9 @@ module.exports = function() {
         process.exit(0);
     }
 
-    require('gulp').task('link', require('gulp-shell').task([
-        'cd plugins/' + plugin.name + ' && jspm link -y github:' + Ari.config.name + '/' + plugin.name + '@master',
-        'cd projects/' + project.name + ' && jspm install -l github:' + Ari.config.name + '/' + plugin.name + '@master'
+    require('gulp').task('link', shell.task([
+        'cd '+Ari.config.root+'/plugins/' + plugin.name + ' && jspm link -y github:' + Ari.config.name + '/' + plugin.name + '@master',
+        'cd '+Ari.config.root+'/projects/' + project.name + ' && jspm install -l github:' + Ari.config.name + '/' + plugin.name + '@master'
     ])).start(function(err){
         if (err){
             Ari.err();

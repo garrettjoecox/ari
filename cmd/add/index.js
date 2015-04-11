@@ -35,7 +35,7 @@ module.exports = function(){
     Ari.config[pselector][name] = { name:name, path:'/' + pselector + '/' + name };
 
     var sourceRoot = Ari.config.root + '/templates/' + Ari.config.defaults.template[selector];
-    var source = sourceRoot + '/**/*';
+    var source = [sourceRoot + '/**/*', sourceRoot + '/**/.*'];
     var dest = Ari.config.root + Ari.config[pselector][name].path;
 
     require('./task.js')(source, dest, {name:name}, onEnd, onError).start('add');
