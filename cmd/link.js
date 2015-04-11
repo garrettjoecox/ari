@@ -1,6 +1,7 @@
 
 var Ari = process.ARI;
 var project = Ari.args[1];
+var shell = require('gulp-shell')
 
 module.exports = function() {
 
