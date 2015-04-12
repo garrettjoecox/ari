@@ -15,6 +15,14 @@ module.exports = function(){
         process.exit(0);
     }
 
+    if (!name){
+        Ari.err();
+        Ari.err('Please provide a name!', selector);
+        Ari.err('$ ari add '+selector+' [name]');
+        Ari.err();
+        process.exit(0);
+    }
+
     if (!types[selector]){
         Ari.err();
         Ari.err('Invalid type: ${a}', selector);
