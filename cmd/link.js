@@ -29,10 +29,10 @@ module.exports = function() {
         Ari.err();
         process.exit(0);
     }
-
+    var pkg = require(Ari.config.root+'/plugins/' + plugin.name + '/package.json');
     require('gulp').task('link', shell.task([
-        'cd '+Ari.config.root+'/plugins/' + plugin.name + ' && jspm link -y github:' + Ari.config.name + '/' + plugin.name + '@master',
-        'cd '+Ari.config.root+'/projects/' + project.name + ' && jspm install -l github:' + Ari.config.name + '/' + plugin.name + '@master'
+        'cd '+Ari.config.root+'/plugins/' + plugin.name + ' && jspm link -y github:' + Ari.config.name + '/' + plugin.name + '@' + pkg.version,
+        'cd '+Ari.config.root+'/projects/' + project.name + ' && jspm install -l github:' + Ari.config.name + '/' + plugin.name + '@' + pkg.version
     ])).start(function(err){
         if (err){
             Ari.err();

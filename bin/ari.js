@@ -36,15 +36,7 @@ if (Ari.args[0] === 'init') require(commands.init)();
 
 else {
     // Check if you're in an ari directory and attach config to process.Ari
-    if (!require('fs').existsSync(process.cwd() + '/.ari-config.json')) {
-        Ari.err();
-        Ari.err("You're not in an ari directory!");
-        Ari.err('Try running ari init');
-        Ari.err();
-        process.exit(0);
-    }
-
-    Ari.config = require(process.cwd() + '/.ari-config.json');
+    Ari = require('../cmd/directoryValidate');
 
     // Run the passed in command if it's a valid command
     // If the command passed is the name of a project, unshift 'project' and run it
