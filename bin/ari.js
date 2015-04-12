@@ -38,6 +38,8 @@ else {
     // Check if you're in an ari directory and attach config to process.Ari
     Ari = require('../cmd/directoryValidate');
 
+    console.log(Ari.args)
+
     // Run the passed in command if it's a valid command
     // If the command passed is the name of a project, unshift 'project' and run it
     if (commands[Ari.args[0]]) {

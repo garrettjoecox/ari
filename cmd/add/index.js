@@ -17,7 +17,7 @@ module.exports = function(){
 
     if (!name){
         Ari.err();
-        Ari.err('Please provide a name!', selector);
+        Ari.err('Please provide a name!');
         Ari.err('$ ari add '+selector+' [name]');
         Ari.err();
         process.exit(0);

@@ -22,7 +22,7 @@ process.ARI = {
 
 var Ari = function(options){
     EventEmitter.call(this);
-    this.type = options[type]
+    this.type = options.type
     this[options.type] = options;
 };
 
@@ -67,15 +67,8 @@ Ari.prototype.changed = function(opts){
 
 
 Ari.prototype.watch = function(plugins, files) {
-
-    plugins.forEach(function(pl, key){
-        if (this.config[key]) {
-
-        }
-    }.bind(this));
-
+    console.log(process.PROJECT)
 }
-
 
 Object.defineProperty(Ari.prototype, 'config', {
     get: function(){
@@ -96,13 +89,14 @@ var Plugin = function(options){
 };
 
 var Project = function(options){
+    // console.log('[ari]: ', options)
     this.type = 'project'
     this.name = options.name;
     this.root = options.path;
     this.pkg  = require(this.root + '/package.json');
     this.paths = exists(this.root + '/build/paths.js') ? require(this.root + '/build/paths.js') : {};
     this.gulpFile  = require(this.root + '/gulpfile');
-    this.gulp  = require(this.root + '/node_moduls/gulpfile');
+    this.gulp  = require(this.root + '/node_modules/gulp');
     return this;
 };
 

@@ -12,6 +12,7 @@ module.exports = (function(){
     }
 
     configPath = configPath.join('/') + fileName;
+
     if (!exists(configPath)) {
         Ari.err();
         Ari.err("You're not in an ari directory!");
@@ -25,6 +26,11 @@ module.exports = (function(){
     if (exists(process.cwd() + '/.ari-plugin.json')) {
         Ari.PLUGIN = require(process.cwd() + '/.ari-plugin.json');
     }
+
+    if (exists(process.cwd() + '/.ari-project.json')) {
+        Ari.PROJECT = require(process.cwd() + '/.ari-project.json');
+    }
+
 
     if ((Ari.PLUGIN || Ari.PROJECT) && Ari.args[0] === 'root') {
         Ari.args.shift();
