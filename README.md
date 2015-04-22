@@ -1,4 +1,4 @@
-# ARI [![Build Status](https://secure.travis-ci.org/joelcoxokc/ari.png?branch=master)](https://travis-ci.org/joelcoxokc/ari) [![NPM version](https://badge-me.herokuapp.com/api/npm/ari.png)](http://badges.enytc.com/for/npm/ari)
+# ARI
 
 > Aurelia Scaffolding Command Line Interface
 
